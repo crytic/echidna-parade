@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  # needs to run only on pull_request
+  lint:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.6
+    - name: Lint
+      if: github.event_name == 'pull_request'
+      env:
+        BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      run: |
+        pip install -e .[lint]
+        black --version
+        git fetch --depth=1 origin $BASE_SHA
+        echo "Files Changed:"
+        git diff --name-only $BASE_SHA... | tee .diff_names.txt
+        NAMES=$(cat .diff_names.txt | python scripts/pyfile_exists.py)
+        if test -z $NAMES
+        then
+          black --diff --check .
+        else
+          echo $NAMES | xargs black --diff --check
+        fi
+        mypy --version
+        mypy
