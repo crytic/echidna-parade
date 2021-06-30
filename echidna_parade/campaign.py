@@ -1,7 +1,10 @@
 import time
 import os.path
 
+from glob import glob
+from shutil import copy
 from slither import Slither
+from sys import exit
 from random import Random
 from yaml import safe_load
 
@@ -94,7 +97,7 @@ def run_campaign(config):
             print(pname, "FAILED")
             detect_echidna_fail(failed_props, pname)
             failures.append(pname + "/echidna.out")
-    """
+    
     generation = 1
     if config.resume is None:
         run_name = config.name
@@ -113,7 +116,7 @@ def run_campaign(config):
         ps = []
         for i in range(config.ncores):
             prefix = run_name + "/gen." + str(generation) + "." + str(i)
-            ps.append(make_echidna_process(prefix, rng, public_functions, base_config, bases, config))
+            ps.append(create_echidna_process(prefix, rng, public_functions, base_config, bases, config))
         any_not_done = True
         gen_start = time.time()
         while any_not_done:
@@ -125,25 +128,25 @@ def run_campaign(config):
                 else:
                     done.append((pname, p, outf))
                     outf.close()
-                    for f in glob.glob(pname + "/corpus/coverage/*.txt"):
+                    for f in glob(pname + "/corpus/coverage/*.txt"):
                         if not os.path.exists(base_config["corpusDir"] + "/coverage/" + os.path.basename(f)):
                             print("COLLECTING NEW COVERAGE:", f)
-                            shutil.copy(f, base_config["corpusDir"] + "/coverage")
+                            copy(f, base_config["corpusDir"] + "/coverage")
                     if p.returncode != 0:
                         print(pname, "FAILED")
-                        process_failures(failed_props, pname)
+                        detect_echidna_fail(failed_props, pname)
                         failures.append(pname + "/echidna.out")
             for d in done:
                 ps.remove(d)
             gen_elapsed = time.time() - gen_start
-            if (not config.wait) and (gen_elapsed > (config.gen_time + 60)):  # full 60 second fudge factor here!
+            if (config.no_wait) and (gen_elapsed > (config.gen_time + 60)):  # full 60 second fudge factor here!
                 print("Generation still running after timeout!  Killing echidna...")
                 for (pname, p, outf) in ps:
                     outf.close()
-                    for f in glob.glob(pname + "/corpus/coverage/*.txt"):
+                    for f in glob(pname + "/corpus/coverage/*.txt"):
                         if not os.path.exists(base_config["corpusDir"] + "/coverage/" + os.path.basename(f)):
                             print("COLLECTING NEW COVERAGE:", f)
-                            shutil.copy(f, base_config["corpusDir"] + "/coverage")
+                            copy(f, base_config["corpusDir"] + "/coverage")
                     if p.poll() is None:
                         p.kill()
                 any_not_done = False
@@ -152,7 +155,7 @@ def run_campaign(config):
     print("DONE!")
     print("RUNNING FINAL COVERAGE PASS...")
     try:
-        os.remove(glob.glob(base_config["corpusDir"] + "/covered.*.txt")[0])
+        os.remove(glob(base_config["corpusDir"] + "/covered.*.txt")[0])
     except IndexError:
         pass
     start = time.time()
@@ -160,18 +163,18 @@ def run_campaign(config):
         prefix = config.name + "/coverage"
     else:
         prefix = config.resume + "/coverage"
-    (pname, p, outf) = make_echidna_process(prefix, rng, public_functions, base_config, bases, config, initial=True, coverage=True)
+    (pname, p, outf) = create_echidna_process(prefix, rng, public_functions, base_config, bases, config, initial=True, coverage=True)
     p.wait()
     outf.close()
     if p.returncode != 0:
         print(pname, "FAILED")
-        process_failures(failed_props, pname)
+        detect_echidna_fail(failed_props, pname)
         failures.append(pname + "/echidna.out")
     print("COVERAGE PASS TOOK", round(time.time()-start, 2), "SECONDS")
     print()
     if len(failures) == 0:
         print("NO FAILURES")
-        sys.exit(0)
+        exit(0)
     else:
         print("SOME TESTS FAILED")
         print()
@@ -182,6 +185,4 @@ def run_campaign(config):
             print("FAILED", len(failed_props[prop]), "TIMES")
             print("See:", ", ".join(map(lambda p: p+"/echidna.out", failed_props[prop])))
 
-        sys.exit(len(failures))
-    """
-
+        exit(len(failures))

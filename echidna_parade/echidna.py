@@ -1,7 +1,10 @@
 import os.path
 
+from glob import glob
+from shutil import copy
 from subprocess import Popen
 from yaml import safe_load, dump
+from random import choice, randrange
 
 def create_base_echidna_config(config):
     base_config = {}
@@ -35,7 +38,7 @@ def generate_echidna_config(rng, public, basic, bases, config, prefix=None, init
         new_config["timeout"] = config.initial_time
     if coverage:
         new_config["timeout"] = 360000
-        corpus_count = len(glob.glob(new_config["corpusDir"] + "/coverage/*.txt"))
+        corpus_count = len(glob(new_config["corpusDir"] + "/coverage/*.txt"))
         new_config["testLimit"] = corpus_count * config.maxseqLen
     basic_list = []
     blacklist = True
@@ -71,11 +74,11 @@ def generate_echidna_config(rng, public, basic, bases, config, prefix=None, init
         new_config["mutConsts"] = []
         for i in range(4):
             # The below is pretty ad-hoc, you can uses bases to over-ride
-            new_config["mutConsts"].append(random.choice([0, 1, 2, 3, 1000, 2000]))
+            new_config["mutConsts"].append(choice([0, 1, 2, 3, 1000, 2000]))
         if rng.random() < config.PdefaultLen:
-            new_config["seqLen"] = random.randrange(config.minseqLen, config.maxseqLen)
+            new_config["seqLen"] = randrange(config.minseqLen, config.maxseqLen)
         if rng.random() < config.PdefaultDict:
-            new_config["dictFreq"] = random.randrange(5, 95) / 100.0
+            new_config["dictFreq"] = randrange(5, 95) / 100.0
         if bases:
             base = rng.choose(bases)
             for k in base:
@@ -95,8 +98,8 @@ def create_echidna_process(prefix, rng, public_functions, base_config, bases, co
     if not (initial or coverage):
         os.mkdir(prefix + "/corpus")
         os.mkdir(prefix + "/corpus/coverage")
-        for f in glob.glob(base_config["corpusDir"] + "/coverage/*.txt"):
-            shutil.copy(f, prefix + "/corpus/coverage/")
+        for f in glob(base_config["corpusDir"] + "/coverage/*.txt"):
+            copy(f, prefix + "/corpus/coverage/")
     with open(prefix + "/config.yaml", 'w') as yf:
         yf.write(dump(g))
         outf = open(prefix + "/echidna.out", 'w')
