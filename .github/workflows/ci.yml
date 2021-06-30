@@ -31,4 +31,4 @@ jobs:
           echo $NAMES | xargs black --diff --check
         fi
         mypy --version
-        mypy echidna_parade
+        mypy --ignore-missing-imports echidna_parade 
