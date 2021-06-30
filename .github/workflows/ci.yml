@@ -6,7 +6,6 @@ on:
       - main
 
 jobs:
-  # needs to run only on pull_request
   lint:
     runs-on: ubuntu-18.04
     steps:
@@ -16,7 +15,6 @@ jobs:
       with:
         python-version: 3.6
     - name: Lint
-      if: github.event_name == 'pull_request'
       env:
         BASE_SHA: ${{ github.event.pull_request.base.sha }}
       run: |
