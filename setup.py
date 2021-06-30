@@ -2,6 +2,12 @@
 
 from setuptools import setup
 
+lint_deps = ["black==20.8b1", "mypy==0.790"]
+
+extra_require = {
+    "lint": lint_deps,
+}
+
 setup(
     name="echidna-parade",
     version="0.1",
