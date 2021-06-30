@@ -18,7 +18,7 @@ jobs:
       env:
         BASE_SHA: ${{ github.event.pull_request.base.sha }}
       run: |
-        pip install -e .[lint]
+        pip install .[lint]
         black --version
         git fetch --depth=1 origin $BASE_SHA
         echo "Files Changed:"
