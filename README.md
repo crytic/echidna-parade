@@ -17,7 +17,7 @@ Take a look to the [Echidna README](https://github.com/crytic/echidna#echidna-a-
 
 ### Example
 
-This repository contains a small smart contract to test echidna-parade:
+This repository contains a [small smart contract](examples/justlen.sol) to test echidna-parade:
 
 ```
 $ echidna-parade examples/justlen.sol --config examples/justlen.yaml --contract TEST --timeout 120 --gen_time 30 --ncores 8 --always "TEST.turn_on_length_checking()" "TEST.push_1()" "TEST.plus5()" "TEST.test_long_64()" "TEST.test_long_128()"
