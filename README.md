@@ -84,6 +84,8 @@ FAILED 11 TIMES
 See: parade.82538/gen.1.2/echidna.out, parade.82538/gen.1.0/echidna.out, parade.82538/gen.1.1/echidna.out, parade.82538/gen.2.4/echidna.out, parade.82538/gen.2.3/echidna.out, parade.82538/gen.2.7/echidna.out, parade.82538/gen.2.0/echidna.out, parade.82538/gen.2.1/echidna.out, parade.82538/gen.2.5/echidna.out, parade.82538/gen.2.2/echidna.out, parade.82538/gen.2.6/echidna.out
 ```
 
+A more detailed explanation on how to perform smart contract fuzzing at scale using echidna-parade is available [here](https://github.com/crytic/building-secure-contracts/blob/master/program-analysis/echidna/smart-contract-fuzzing-at-scale.md). 
+
 ## Installation
 
 Before starting, make sure Echidna is [installed](https://github.com/crytic/echidna#installation). Then, just use pip to install echidna-parade locally:
