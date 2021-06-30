@@ -31,5 +31,6 @@ setup(
         "Programming Language :: Python :: 3",
     ],
     install_requires=["pyyaml", "slither-analyzer", "crytic-compile"],
+    extras_require=extra_require,
     url="https://github.com/crytic/echidna-parade",
 )
