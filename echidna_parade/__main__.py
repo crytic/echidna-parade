@@ -3,8 +3,8 @@ import os.path
 import multiprocessing
 import sys
 
-from config import create_parade_config
-from campaign import run_campaign
+from echidna_parade.config import create_parade_config
+from echidna_parade.campaign import run_campaign
 
 
 def parse_args():

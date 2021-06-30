@@ -8,7 +8,7 @@ from sys import exit
 from random import Random
 from yaml import safe_load
 
-from echidna import (
+from echidna_parade.echidna import (
     create_base_echidna_config,
     generate_echidna_config,
     create_echidna_process,
