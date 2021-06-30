@@ -6,15 +6,22 @@ from subprocess import Popen
 from yaml import safe_load, dump
 from random import choice, randrange
 
+
 def create_base_echidna_config(config):
     base_config = {}
     if config.config is not None:
         y = safe_load(config.config)
         for key in y:
-            if key not in ["timeout", "testLimit", "stopOnFail", "corpusDir", "coverage"]:
+            if key not in [
+                "timeout",
+                "testLimit",
+                "stopOnFail",
+                "corpusDir",
+                "coverage",
+            ]:
                 base_config[key] = y[key]
     base_config["timeout"] = config.gen_time
-    base_config["testLimit"] = 1000000000 # basically infinite, use timeout to control
+    base_config["testLimit"] = 1000000000  # basically infinite, use timeout to control
     if "seqLen" not in base_config:
         base_config["seqLen"] = min(max(config.minseqLen, 100), config.maxseqLen)
     if "dictFreq" not in base_config:
@@ -30,7 +37,10 @@ def create_base_echidna_config(config):
     base_config["coverage"] = True
     return base_config
 
-def generate_echidna_config(rng, public, basic, bases, config, prefix=None, initial=False, coverage=False):
+
+def generate_echidna_config(
+    rng, public, basic, bases, config, prefix=None, initial=False, coverage=False
+):
     new_config = dict(basic)
     new_config["filterFunctions"] = []
     new_config["filterBlacklist"] = True
@@ -67,7 +77,9 @@ def generate_echidna_config(rng, public, basic, bases, config, prefix=None, init
     if (len(excluded) == len(public)) and (len(public) > 0):
         # This should be quite rare unless you have very few functions or a very low config.prob!
         print("Degenerate blacklist configuration, trying again...")
-        return generate_config(rng, public, basic, bases, config, prefix, initial, coverage)
+        return generate_config(
+            rng, public, basic, bases, config, prefix, initial, coverage
+        )
     new_config["filterFunctions"] = excluded
     if not (initial or coverage):
         new_config["corpusDir"] = "corpus"
@@ -86,11 +98,39 @@ def generate_echidna_config(rng, public, basic, bases, config, prefix=None, init
 
     return new_config
 
-def create_echidna_process(prefix, rng, public_functions, base_config, bases, config, initial=False, coverage=False):
-    g = generate_echidna_config(rng, public_functions, base_config, bases, config, prefix=prefix,
-                        initial=initial, coverage=coverage)
-    print("- LAUNCHING echidna-test in", prefix, "blacklisting [", ", ".join(g["filterFunctions"]),
-          "] with seqLen", g["seqLen"], "dictFreq", g["dictFreq"], "and mutConsts ", g.setdefault("mutConsts", [1, 1, 1, 1]))
+
+def create_echidna_process(
+    prefix,
+    rng,
+    public_functions,
+    base_config,
+    bases,
+    config,
+    initial=False,
+    coverage=False,
+):
+    g = generate_echidna_config(
+        rng,
+        public_functions,
+        base_config,
+        bases,
+        config,
+        prefix=prefix,
+        initial=initial,
+        coverage=coverage,
+    )
+    print(
+        "- LAUNCHING echidna-test in",
+        prefix,
+        "blacklisting [",
+        ", ".join(g["filterFunctions"]),
+        "] with seqLen",
+        g["seqLen"],
+        "dictFreq",
+        g["dictFreq"],
+        "and mutConsts ",
+        g.setdefault("mutConsts", [1, 1, 1, 1]),
+    )
     try:
         os.mkdir(prefix)
     except OSError:
@@ -100,19 +140,24 @@ def create_echidna_process(prefix, rng, public_functions, base_config, bases, co
         os.mkdir(prefix + "/corpus/coverage")
         for f in glob(base_config["corpusDir"] + "/coverage/*.txt"):
             copy(f, prefix + "/corpus/coverage/")
-    with open(prefix + "/config.yaml", 'w') as yf:
+    with open(prefix + "/config.yaml", "w") as yf:
         yf.write(dump(g))
-        outf = open(prefix + "/echidna.out", 'w')
+        outf = open(prefix + "/echidna.out", "w")
         call = ["echidna-test"]
     call.extend(config.files)
     call.extend(["--config", "config.yaml"])
     if config.contract is not None:
         call.extend(["--contract", config.contract])
         call.extend(["--format", "text"])
-    return (prefix, Popen(call, stdout=outf, stderr=outf, cwd=os.path.abspath(prefix)), outf)
+    return (
+        prefix,
+        Popen(call, stdout=outf, stderr=outf, cwd=os.path.abspath(prefix)),
+        outf,
+    )
+
 
 def detect_echidna_fail(failed_props, prefix):
-    with open(prefix + "/echidna.out", 'r') as ffile:
+    with open(prefix + "/echidna.out", "r") as ffile:
         for line in ffile:
             if "failed" in line[:-1]:
                 if line[:-1] not in failed_props:
