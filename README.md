@@ -99,7 +99,7 @@ Also, considering [emailing](mailto:echidna-dev@trailofbits.com) the Echidna dev
 
 ## License
 
-Echidna-parade is licensed and distributed under the [AGPLv3 license](https://github.com/crytic/echidna-parede/blob/master/LICENSE).
+Echidna-parade is licensed and distributed under the [AGPLv3 license](https://github.com/crytic/echidna-parade/blob/main/LICENSE).
 
 ## Publications
 
