@@ -18,6 +18,7 @@ jobs:
       env:
         BASE_SHA: ${{ github.event.pull_request.base.sha }}
       run: |
+        ls -l
         pip install .[lint]
         black --version
         git fetch --depth=1 origin $BASE_SHA
