@@ -71,7 +71,7 @@ contract TEST {
   }
 
   function test_long_64() public view {
-    if (add_array.length >= 128) {
+    if (add_array.length >= 64) {
       if (lengthChecking) {
 	assert(false);
       }
