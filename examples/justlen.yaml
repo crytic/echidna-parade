@@ -1,3 +1,4 @@
 checkAsserts: true
+testMode: assertion
 testLimit: 1000000
 timeout: 120
