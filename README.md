@@ -88,9 +88,18 @@ A more detailed explanation on how to perform smart contract fuzzing at scale us
 
 ## Installation
 
-Before starting, make sure Echidna is [installed](https://github.com/crytic/echidna#installation). Then, just use pip to install echidna-parade locally:
+Before starting, make sure Echidna is [installed](https://github.com/crytic/echidna#installation). Then, just use pip to install echidna-parade:
+
 
 ```
+$ pip3 install echidna-parade
+```
+
+or from this repository:
+
+```
+$ git clone https://github.com/crytic/echidna-parade
+$ cd echidna-parade
 $ pip3 install . --user
 ```
 
