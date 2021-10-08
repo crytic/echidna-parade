@@ -2,6 +2,8 @@
 
 Echidna-parade is an experimental Python tool that uses configuration variance and a common corpus to try to throughly test smart contracts with the [Echidna smart-contract fuzzer](https://github.com/crytic/echidna).
 
+Echidna-parade is based on the original [code developed by Alex Groce at Northern Arizona University](https://github.com/agroce/echidna-parade/).
+
 ## Features
 
 * Scale smart contract fuzzing using as many Echidna processes as you can run in your computer
