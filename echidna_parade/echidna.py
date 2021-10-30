@@ -77,7 +77,7 @@ def generate_echidna_config(
     if (len(excluded) == len(public)) and (len(public) > 0):
         # This should be quite rare unless you have very few functions or a very low config.prob!
         print("Degenerate blacklist configuration, trying again...")
-        return generate_config(
+        return generate_echidna_config(
             rng, public, basic, bases, config, prefix, initial, coverage
         )
     new_config["filterFunctions"] = excluded
