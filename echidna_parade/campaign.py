@@ -2,7 +2,7 @@ import time
 import os.path
 
 from glob import glob
-from shutil import copy
+from shutil import copy, rmtree
 from slither import Slither
 from sys import exit
 from random import Random
@@ -47,6 +47,11 @@ def get_callable_functions(config, base_config):
     return public_functions
 
 
+def clean_results(pname):
+    "Delete the compilation and coverage data from a swarm instance's working directory"
+    rmtree(pname + "/crytic-export", ignore_errors=True)
+    rmtree(pname + "/corpus", ignore_errors=True)
+    
 def run_campaign(config):
     print("Starting echidna-parade with config={}".format(config))
 
@@ -171,6 +176,8 @@ def run_campaign(config):
                         print(pname, "FAILED")
                         detect_echidna_fail(failed_props, pname)
                         failures.append(pname + "/echidna.out")
+                    if config.clean_results:
+                        clean_results(pname)
             for d in done:
                 ps.remove(d)
             gen_elapsed = time.time() - gen_start
@@ -188,6 +195,8 @@ def run_campaign(config):
                         ):
                             print("COLLECTING NEW COVERAGE:", f)
                             copy(f, base_config["corpusDir"] + "/coverage")
+                    if config.clean_results:
+                        clean_results(pname)
                     if p.poll() is None:
                         p.kill()
                 any_not_done = False
