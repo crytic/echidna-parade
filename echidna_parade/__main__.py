@@ -129,6 +129,12 @@ def parse_args():
         action="store_true",
         help="Kill echidna subprocesses if they do not finish on time. Useful for a fair benchmarking.",
     )
+    parser.add_argument(
+        "--clean-results",
+        action="store_true",
+        help="Delete the compilation and coverage files for each swarm instance when it completes."
+    )
+    
     parsed_args = parser.parse_args(sys.argv[1:])
     return (parsed_args, parser)
 
