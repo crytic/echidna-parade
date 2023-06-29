@@ -107,7 +107,7 @@ $ pip3 install . --user
 
 ## Getting help
 
-Feel free to stop by our #ethereum slack channel in [Empire Hacking](https://empireslacking.herokuapp.com/) for help using or extending echidna-parade.
+Feel free to stop by our #ethereum slack channel in [Empire Hacking](https://slack.empirehacking.nyc/) for help using or extending echidna-parade.
 Also, considering [emailing](mailto:echidna-dev@trailofbits.com) the Echidna development team directly for more detailed questions
 
 ## License
